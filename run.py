@@ -141,3 +141,6 @@ def insert_into_db(mysql_db_password, user_email, gcp_filename, database_name):
         connection.commit()
     finally:
         connection.close()
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0')
