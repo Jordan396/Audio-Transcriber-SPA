@@ -18,14 +18,14 @@ from google.cloud import speech
 from google.cloud.speech import enums
 from google.cloud.speech import types
 
-MYSQL_DB_PASSWORD = config.MYSQL_DB_PASSWORD
-INSTANCE_CONNECTION_NAME = config.INSTANCE_CONNECTION_NAME
-AUDIO_BUCKET_NAME = config.AUDIO_BUCKET_NAME
+"""
+Insert config.py variables here.
+"""
 
 CONNECTION_NAME = getenv("INSTANCE_CONNECTION_NAME", INSTANCE_CONNECTION_NAME)
 DB_USER = getenv("MYSQL_USER", "root")
 DB_PASSWORD = getenv("MYSQL_PASSWORD", MYSQL_DB_PASSWORD)
-DB_NAME = getenv("MYSQL_DATABASE", "transcribe_status")
+DB_NAME = getenv("MYSQL_DATABASE", MYSQL_DB_NAME)
 
 mysql_config = {
     "user": DB_USER,
@@ -33,7 +33,7 @@ mysql_config = {
     "db": DB_NAME,
     "charset": "utf8mb4",
     "cursorclass": pymysql.cursors.DictCursor,
-    "autocommit": True,
+    "autocommit": True
 }
 
 # Create SQL connection globally to enable reuse
@@ -54,7 +54,7 @@ def __get_cursor():
         return mysql_conn.cursor()
 
 
-def mysql_demo(operationname, filename):
+def update_operation_status(operationname, filename):
     global mysql_conn
 
     # Initialize connections lazily, in case SQL access isn't needed for this
@@ -71,16 +71,16 @@ def mysql_demo(operationname, filename):
     # Remember to close SQL resources declared while running this function.
     # Keep any declared in global scope (e.g. mysql_conn) for later reuse.
     with __get_cursor() as cursor:
-        try:
-            sql = "UPDATE `status` SET operationname = %s WHERE filename = %s;"
-            cursor.execute(sql, (operationname, filename))
-            mysql_conn.commit()
-            logging.info("Status updated successfully!")
-        finally:
-            mysql_conn.close()
+        sql = "UPDATE `OperationStatus` SET `operationname` = %s WHERE `filename` = %s;"
+        affected_rows = cursor.execute(sql, (operationname, filename))
+        mysql_conn.commit()
+        logging.info("Status updated successfully!")
+        if (affected_rows == 0):
+            logging.error("Row not updated!")
+        return affected_rows
 
 
-def transcribe_audio(event, context):
+def main_function(event, context):
     """
     Asynchronously transcribes the audio file specified by the gcs_uri.
     Triggered by a change to a Cloud Storage bucket.
@@ -89,14 +89,17 @@ def transcribe_audio(event, context):
          context (google.cloud.functions.Context): Metadata for the event.
     """
     client = speech.SpeechClient()
-    filename = format(event["name"])
-    uri = "gs://{}/{}".format(AUDIO_BUCKET_NAME,filename)
+    filename = str(format(event["name"]))
+    uri = "gs://{}/{}".format(AUDIO_BUCKET_NAME, filename)
     logging.info("Resource URI: ".format(uri))
     audio = types.RecognitionAudio(uri=uri)
     config = types.RecognitionConfig(
         encoding=enums.RecognitionConfig.AudioEncoding.LINEAR16, language_code="en-US"
     )
     operation = client.long_running_recognize(config, audio)
-    operationname = operation.operation["Operation name"]
-    logging.info("Operation {} completed.".format(operationname))
-    mysql_demo(operationname=operationname, filename=filename)
+    operationname = str(operation.operation.name)
+    logging.info(
+        "Operation {} with filename {} completed.".format(operationname, filename)
+    )
+    affected_rows = update_operation_status(operationname=operationname, filename=filename)
+    logging.info("Affected rows: {}".format(affected_rows))

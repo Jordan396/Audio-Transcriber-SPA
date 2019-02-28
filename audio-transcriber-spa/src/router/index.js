@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 const routerOptions = [
-  { path: '/audio-transcriber', component: 'AudioTranscriber' },
+  { path: '/audio-transcriber', component: 'Main' },
   { path: '*', component: '404NotFound' },
 ]
 
