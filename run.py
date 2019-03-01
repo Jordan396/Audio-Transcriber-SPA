@@ -65,6 +65,7 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = SERVICE_ACC_KEY_PATH
 
 app = Flask(__name__, static_folder="./dist/static", template_folder="./dist")
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 

@@ -1,7 +1,7 @@
 backend/config.py
-backend/sendgrid_config.json
 backend/venv/*
 keys/*
 shortcuts.md
 media/uploads/*
 backend/email_completed_transcript/node_modules/*
+audio-transcriber-spa/node_modules/*
