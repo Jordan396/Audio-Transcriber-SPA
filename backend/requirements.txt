@@ -22,6 +22,7 @@ google-cloud-storage==1.14.0
 google-resumable-media==0.3.2
 googleapis-common-protos==1.5.8
 grpcio==1.18.0
+gunicorn==19.9.0
 httplib2==0.12.1
 idna==2.8
 ipykernel==5.1.0
@@ -72,4 +73,4 @@ urllib3==1.24.1
 wcwidth==0.1.7
 webencodings==0.5.1
 Werkzeug==0.14.1
-
+widgetsnbextension==3.4.2
