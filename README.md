@@ -1,6 +1,6 @@
 # Audio-Transcriber-SPA
 ## Overview
-[https://thebackyardmoose.com/audio-transcriber](https://thebackyardmoose.com/audio-transcriber)
+[http://54.179.181.121/audio-transcriber](http://54.179.181.121/audio-transcriber)
 
 Audio transcription can be an extremely tedious process - I know, I've been there. Hence, I designed this single page web application to provide my friends and myself with a quick and easy way to convert audio to text. Once the conversion process completes, users are automatically emailed their transcripts (note that emails may be marked as *Spam*).
 
