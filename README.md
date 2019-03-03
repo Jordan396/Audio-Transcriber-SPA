@@ -4,9 +4,9 @@
 
 Audio transcription can be an extremely tedious process - I know, I've been there. Hence, I designed this single page web application to provide my friends and myself with a quick and easy way to convert audio to text. Once the conversion process completes, users are automatically emailed their transcripts (note that emails may be marked as *Spam*).
 
-Currently, the application only supports *.wav* files not exceeding *16MB*.
+Currently, the application only supports *.wav* files not exceeding *100MB*.
 
-**IMPORTANT:** As much as possible, I strive to keep this application *free of charge*. However, this is only possible with your support. If you'd like to contribute, become a Patreon at [*TheBackyardMoose*](https://www.patreon.com/TheBackyardMoose).
+**IMPORTANT:** As much as possible, I strive to keep this application *free of charge*. However, this is only possible with your support. If you'd like to contribute, become a Patreon of [*TheBackyardMoose*](https://www.patreon.com/TheBackyardMoose).
 
 ---
 

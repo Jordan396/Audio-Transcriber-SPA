@@ -51,7 +51,7 @@ __credits__ = ["Jordan396"]
 __license__ = "MIT"
 __maintainer__ = "Jordan396"
 __email__ = "jordan.chyehong@gmail.com"
-__status__ = "Production"
+__status__ = "Debug"
 
 AUDIO_BUCKET_NAME = config.AUDIO_BUCKET_NAME
 MYSQL_DB_PASSWORD = config.MYSQL_DB_PASSWORD
@@ -65,7 +65,7 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = SERVICE_ACC_KEY_PATH
 
 app = Flask(__name__, static_folder="./dist/static", template_folder="./dist")
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 
