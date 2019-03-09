@@ -1,12 +1,22 @@
 # Audio-Transcriber-SPA
-## Overview
-[http://54.179.181.121/audio-transcriber](http://54.179.181.121/audio-transcriber)
 
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![Project License](https://img.shields.io/github/license/jordan396/Audio-Transcriber-SPA.svg)](https://img.shields.io/github/license/jordan396/Audio-Transcriber-SPA.svg)
+[![Latest Commit](https://img.shields.io/github/last-commit/jordan396/Audio-Transcriber-SPA/master.svg)](https://img.shields.io/github/last-commit/jordan396/Audio-Transcriber-SPA/master.svg)
+[![Repo Size](https://img.shields.io/github/repo-size/jordan396/Audio-Transcriber-SPA.svg)](https://img.shields.io/github/repo-size/jordan396/Audio-Transcriber-SPA.svg)
+[![GitHub Followers](https://img.shields.io/github/followers/jordan396.svg?label=Follow)](https://img.shields.io/github/followers/jordan396.svg?label=Follow)
+
+## Overview
 Audio transcription can be an extremely tedious process - I know, I've been there. Hence, I designed this single page web application to provide my friends and myself with a quick and easy way to convert audio to text. Once the conversion process completes, users are automatically emailed their transcripts (note that emails may be marked as *Spam*).
 
 Currently, the application only supports *.wav* files not exceeding *100MB*.
 
 **IMPORTANT:** As much as possible, I strive to keep this application *free of charge*. However, this is only possible with your support. If you'd like to contribute, become a Patreon of [*TheBackyardMoose*](https://www.patreon.com/TheBackyardMoose).
+
+---
+
+## Live Demo
+[http://54.179.181.121/audio-transcriber](http://54.179.181.121/audio-transcriber)
 
 ---
 
