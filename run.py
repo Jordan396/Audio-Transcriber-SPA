@@ -38,6 +38,8 @@ repository. If not, see <https://opensource.org/licenses/MIT>.
 import os
 import datetime
 import pymysql
+import ast
+import json
 from flask import Flask, render_template, redirect, request, jsonify, url_for
 from werkzeug.utils import secure_filename
 from flask_cors import CORS
@@ -59,6 +61,12 @@ app = Flask(__name__, static_folder="./dist/static", template_folder="./dist")
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+
+with open('tmp/gsa.json', 'w') as outfile:
+    json.dump(ast.literal_eval(os.environ.get(
+        'GOOGLE_SERVICE_ACCOUNT')), outfile)
+
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "tmp/gsa.json"
 
 
 @app.route("/<path:path>")
@@ -85,7 +93,7 @@ def transcribeAudio():
         # Get current time for file identification
         now = datetime.datetime.now()
         timeIdentifier = now.strftime("%Y%m%d%H%M")
-        gcp_filename = "{}|audio{}.wav".format(user_email ,timeIdentifier)
+        gcp_filename = "{}|audio{}.wav".format(user_email, timeIdentifier)
         file.save(source_file_name)
         upload_blob(AUDIO_BUCKET_NAME, source_file_name, gcp_filename)
     else:
@@ -94,7 +102,8 @@ def transcribeAudio():
 
 
 def allowed_file(filename):
-    hasValidExtension = "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+    hasValidExtension = "." in filename and filename.rsplit(
+        ".", 1)[1].lower() in ALLOWED_EXTENSIONS
     hasValidFilename = "|" not in filename
     return (hasValidExtension and hasValidFilename)
 
@@ -107,7 +116,9 @@ def upload_blob(bucket_name, source_file_name, destination_blob_name):
 
     blob.upload_from_filename(source_file_name)
 
-    print("File {} uploaded to {}.".format(source_file_name, destination_blob_name))
+    print("File {} uploaded to {}.".format(
+        source_file_name, destination_blob_name))
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
