@@ -8,7 +8,7 @@
 
 !["homepage"](img/homepage-vue.png)
 
-Application: [https://fierce-wildwood-49103.herokuapp.com/audio-transcriber](https://fierce-wildwood-49103.herokuapp.com/audio-transcriber)
+Link: [https://fierce-wildwood-49103.herokuapp.com/audio-transcriber](https://fierce-wildwood-49103.herokuapp.com/audio-transcriber)
 
 ---
 
