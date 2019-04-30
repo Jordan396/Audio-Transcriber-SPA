@@ -4,3 +4,4 @@ shortcuts.md
 media/uploads/*
 backend/email_completed_transcript/node_modules/*
 audio-transcriber-spa/node_modules/*
+npm-debug.log
