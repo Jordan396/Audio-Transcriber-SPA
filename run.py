@@ -52,7 +52,7 @@ __email__ = "jordan.chyehong@gmail.com"
 __status__ = "Debug"
 
 AUDIO_BUCKET_NAME = "audio-transcriber-recordings"
-UPLOAD_FOLDER = "./media/uploads"
+UPLOAD_FOLDER = "/tmp"
 ALLOWED_EXTENSIONS = set(["wav"])
 
 app = Flask(__name__, static_folder="./dist/static", template_folder="./dist")
