@@ -10,8 +10,6 @@
 
 Application: [https://fierce-wildwood-49103.herokuapp.com/audio-transcriber](https://fierce-wildwood-49103.herokuapp.com/audio-transcriber)
 
-Documentation: 
-
 This application was designed to provide a quick and easy way to convert audio to text. Users are automatically emailed their transcripts once the conversion process completes (email may be sent to *Spam* folder). 
 
 Currently, the application only supports *.wav* files not exceeding *100MB*.
