@@ -43,8 +43,6 @@ from werkzeug.utils import secure_filename
 from flask_cors import CORS
 from google.cloud import storage
 
-from backend import config
-
 __author__ = "Jordan396"
 __copyright__ = "Copyright 2019, Jordan396"
 __credits__ = ["Jordan396"]
@@ -53,15 +51,9 @@ __maintainer__ = "Jordan396"
 __email__ = "jordan.chyehong@gmail.com"
 __status__ = "Debug"
 
-AUDIO_BUCKET_NAME = config.AUDIO_BUCKET_NAME
-MYSQL_DB_PASSWORD = config.MYSQL_DB_PASSWORD
-SERVICE_ACC_KEY_PATH = config.SERVICE_ACC_KEY_PATH
-MYSQL_DB_NAME = config.MYSQL_DB_NAME
-
+AUDIO_BUCKET_NAME = "audio-transcriber-recordings"
 UPLOAD_FOLDER = "./media/uploads"
 ALLOWED_EXTENSIONS = set(["wav"])
-
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = SERVICE_ACC_KEY_PATH
 
 app = Flask(__name__, static_folder="./dist/static", template_folder="./dist")
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
@@ -93,14 +85,8 @@ def transcribeAudio():
         # Get current time for file identification
         now = datetime.datetime.now()
         timeIdentifier = now.strftime("%Y%m%d%H%M")
-        gcp_filename = "audio-{}.wav".format(timeIdentifier)
+        gcp_filename = "{}|audio{}.wav".format(user_email ,timeIdentifier)
         file.save(source_file_name)
-        insert_into_db(
-            mysql_db_password=MYSQL_DB_PASSWORD,
-            user_email=user_email,
-            gcp_filename=gcp_filename,
-            database_name=MYSQL_DB_NAME,
-        )
         upload_blob(AUDIO_BUCKET_NAME, source_file_name, gcp_filename)
     else:
         print("File not allowed!")
@@ -108,7 +94,9 @@ def transcribeAudio():
 
 
 def allowed_file(filename):
-    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+    hasValidExtension = "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+    hasValidFilename = "|" not in filename
+    return (hasValidExtension and hasValidFilename)
 
 
 def upload_blob(bucket_name, source_file_name, destination_blob_name):
@@ -120,28 +108,6 @@ def upload_blob(bucket_name, source_file_name, destination_blob_name):
     blob.upload_from_filename(source_file_name)
 
     print("File {} uploaded to {}.".format(source_file_name, destination_blob_name))
-
-
-def insert_into_db(mysql_db_password, user_email, gcp_filename, database_name):
-    connection = pymysql.connect(
-        host="127.0.0.1",
-        user="root",
-        password=mysql_db_password,
-        db=database_name,
-        charset="utf8mb4",
-        cursorclass=pymysql.cursors.DictCursor,
-    )
-    try:
-        with connection.cursor() as cursor:
-            # Create a new record
-            sql = "INSERT INTO `OperationStatus` (`email`, `filename`, `status`) VALUES (%s, %s, %s)"
-            cursor.execute(sql, (user_email, gcp_filename, "PROCESSING"))
-
-        # connection is not autocommit by default. So you must commit to save
-        # your changes.
-        connection.commit()
-    finally:
-        connection.close()
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')

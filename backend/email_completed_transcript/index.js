@@ -241,15 +241,12 @@ function remainingFunction(file, receipientEmail, SENDGRID_KEY) {
         })
         .then((signedUrl) => {
             const emailBody = "Greetings!\n\n" +
-            "You may access your transcript here:\n" +
-            signedUrl +
-            "\n\nThis free service was made possible by the generosity of TheBackyardMoose supporters." +
-            "To help keep this service alive, please support us on Patreon.\n\n" +
-            "https://www.patreon.com/TheBackyardMoose\n\n" +
-            "We wish you all the best!\n\n" +
-            "Warm regards,\n\n" +
-            "TheBackyardMoose\n\n" +
-            "https://thebackyardmoose.com";
+                "You may access your transcript here:\n\n" +
+                signedUrl +
+                "\n\nIf you'd like to lend your support, visit:\n\n" +
+                "https://www.patreon.com/TheBackyardMoose\n\n" +
+                "Warm regards,\n\n" +
+                "TheBackyardMoose";
             const req = {
                 sendgridKey: SENDGRID_KEY,
                 method: "POST",
@@ -269,6 +266,6 @@ function remainingFunction(file, receipientEmail, SENDGRID_KEY) {
         })
         .catch(err => {
             console.log("Job failed!");
-            return Promise.reject(err);
+            return Promise.reject(err); W
         });
 }

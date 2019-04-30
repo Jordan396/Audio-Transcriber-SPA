@@ -1,6 +1,5 @@
-backend/config.py
+config.py
 backend/venv/*
-keys/*
 shortcuts.md
 media/uploads/*
 backend/email_completed_transcript/node_modules/*

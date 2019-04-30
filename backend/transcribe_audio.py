@@ -9,6 +9,7 @@ PyMySQL==0.9.3
 """
 import logging
 from os import getenv
+import time
 
 import pymysql
 from pymysql.err import OperationalError
@@ -80,6 +81,55 @@ def update_operation_status(operationname, filename):
         return affected_rows
 
 
+def insert_into_db(filename, email):
+    global mysql_conn
+
+    # Initialize connections lazily, in case SQL access isn't needed for this
+    # GCF instance. Doing so minimizes the number of active SQL connections,
+    # which helps keep your GCF instances under SQL connection limits.
+    if not mysql_conn:
+        try:
+            mysql_conn = pymysql.connect(**mysql_config)
+        except OperationalError:
+            # If production settings fail, use local development ones
+            mysql_config["unix_socket"] = f"/cloudsql/{CONNECTION_NAME}"
+            mysql_conn = pymysql.connect(**mysql_config)
+
+    # Remember to close SQL resources declared while running this function.
+    # Keep any declared in global scope (e.g. mysql_conn) for later reuse.
+    with __get_cursor() as cursor:
+        sql = "INSERT INTO `OperationStatus` (`email`, `filename`, `status`) VALUES (%s, %s, %s)"
+        cursor.execute(sql, (email, filename, "PROCESSING"))
+        mysql_conn.commit()
+        logging.info("Status updated successfully!")
+
+
+def update_operation_status(operationname, filename):
+    global mysql_conn
+
+    # Initialize connections lazily, in case SQL access isn't needed for this
+    # GCF instance. Doing so minimizes the number of active SQL connections,
+    # which helps keep your GCF instances under SQL connection limits.
+    if not mysql_conn:
+        try:
+            mysql_conn = pymysql.connect(**mysql_config)
+        except OperationalError:
+            # If production settings fail, use local development ones
+            mysql_config["unix_socket"] = f"/cloudsql/{CONNECTION_NAME}"
+            mysql_conn = pymysql.connect(**mysql_config)
+
+    # Remember to close SQL resources declared while running this function.
+    # Keep any declared in global scope (e.g. mysql_conn) for later reuse.
+    with __get_cursor() as cursor:
+        sql = "UPDATE `OperationStatus` SET `operationname` = %s WHERE `filename` = %s;"
+        affected_rows = cursor.execute(sql, (operationname, filename))
+        mysql_conn.commit()
+        logging.info("Status updated successfully!")
+        if (affected_rows == 0):
+            logging.error("Row not updated!")
+        return affected_rows
+
+
 def main_function(event, context):
     """
     Asynchronously transcribes the audio file specified by the gcs_uri.
@@ -90,6 +140,10 @@ def main_function(event, context):
     """
     client = speech.SpeechClient()
     filename = str(format(event["name"]))
+    email = filename.split("|")[0]
+    insert_into_db(filename, email)
+    time.sleep(5)
+
     uri = "gs://{}/{}".format(AUDIO_BUCKET_NAME, filename)
     logging.info("Resource URI: ".format(uri))
     audio = types.RecognitionAudio(uri=uri)
