@@ -63,7 +63,7 @@ app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 with open('/tmp/gsa.json', 'w') as outfile:
-    json.dump(ast.literal_eval(os.environ['GOOGLE_SERVICE_ACCOUNT']), outfile)
+    json.dump(ast.literal_eval(os.environ['GOOGLE_APPLICATION_CREDENTIALS']), outfile)
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/tmp/gsa.json"
 
